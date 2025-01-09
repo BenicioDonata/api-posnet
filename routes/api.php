@@ -8,9 +8,9 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('posnet')->group(function () {
 
-        Route::post('/', [PosnetController::class, 'addCard']); //ADD CARD
+        Route::post('/addCard', [PosnetController::class, 'addCard']); //ADD CARD
 
-        Route::post('/', [PosnetController::class, 'doPayment']); //DO PAYMENT
+        Route::post('/payment', [PosnetController::class, 'doPayment']); //DO PAYMENT
 
 
     });
