@@ -34,7 +34,14 @@ class Card extends Model
 
     public function payment()
     {
-        return $this->hasOne('App\Models\Payment');
+        return $this->belongsTo('App\Models\Payment'); //acomode la relacion del modelo porque una card puede tener mas de un pago
+    }
+
+
+    //function para obtener una card by numero de card
+    static function getCardByNumber($number)
+    {
+        return Card::with('user')->where('number_card', $number)->first();
     }
 
 

@@ -11,14 +11,10 @@ class PosnetController extends Controller
     private $cardService;
     private $paymentService;
 
-   
-
     public function __construct(CardService $cardService, PaymentService $paymentService)
     {
         $this->cardService = $cardService;
         $this->paymentService = $paymentService;
-
-       
     }
 
     public function addCard(Request $request)
@@ -45,14 +41,56 @@ class PosnetController extends Controller
         }
     }
 
+    //EN UNA HORA MAS HICE ESTO 
     public function doPayment(Request $request)
     {
 
+        $totalAmount = $request->amount;
+
         try {
 
-            $payment = $this->paymentService->doPayment($request);
+            if (validate_request_payment($request)) {
+                return response()->json(["Request Error."], 500);
+            }
 
-            return response()->json(['Success' => $payment], 201);
+            //valido que monto no sea menor o igual a cero
+            if($totalAmount <= 0) {
+                return response()->json(["Amount is zero."], 500);
+            }
+
+            //VALIdo que cantidad de cuotas no sea igual menor a cero
+            if($request->quotas <= 0) {
+                return response()->json(["Quota is zero."], 500);
+            }
+
+            // Si el pago es en 1 cuota, no se genera ningún recargo, de lo contrario, el monto se
+            // incrementará en
+            // un 3% por cada cuota superior a 1. (Ejemplo: Pagar en 5 cuotas representará un 12% de
+            // incremento).
+
+            if($request->quotas > 1){
+                $totalAmount = $this->paymentService->calculateAmount($request);
+            }
+
+            // El POSNET debe chequear que la tarjeta tenga limite suficiente para poder efectuar el
+            // pago junto
+            // con el recargo, si hubiese. En caso de éxito, debe generar y retornar (no mostrar) los
+            // datos de un ticket donde
+            // consten los siguientes :
+            // ▪ Nombre y apellido del cliente.
+            // ▪ Monto total a pagar.
+            // ▪ Monto de cada cuota.
+            // Si la operación no tuvo éxito, se retornará una excepcion controlada.
+
+            $amountAvailable = $this->paymentService->checkAmountAvailable($request, $totalAmount);
+
+            if(!$amountAvailable){
+                return response()->json(["Insufficient limit."], 404);
+            }
+
+            $this->paymentService->doPayment($request, $totalAmount);
+
+            return response()->json(['Message' => 'Payment Success'], 201);
 
         }catch (\Exception $e) {
 

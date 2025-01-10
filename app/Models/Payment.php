@@ -19,7 +19,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'id',
-        'mount',
+        'amount',
     ];
 
     protected $table = "payment";
