@@ -24,12 +24,12 @@ class Card extends Model
         'enabled_amount_limit',
     ];
 
-    protected $table = "card";
+    protected $table = "cards";
 
 
     public function user()
     {
-        return $this->hasOne('App\Models\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function payment()

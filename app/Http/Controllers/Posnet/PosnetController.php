@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Posnet;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\{CardService, PaymentService};
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class PosnetController extends Controller
 {
@@ -17,7 +19,7 @@ class PosnetController extends Controller
         $this->paymentService = $paymentService;
     }
 
-    public function addCard(Request $request)
+    public function addCard(Request $request) : JsonResponse
     {
 
         try {
@@ -31,6 +33,11 @@ class PosnetController extends Controller
                 return response()->json(["Entity name banck Error."], 500);
             }
 
+            //vlido la cantidad de digitos de la tarjeta
+            if(strlen($request->number_card) < 8 || strlen($request->number_card) > 8 ){
+                return response()->json(["Invalid number card."], 500);
+            }
+
             $card = $this->cardService->addCard($request);
 
             return response()->json(['Success' => $card], 201);
@@ -42,7 +49,7 @@ class PosnetController extends Controller
     }
 
     //EN UNA HORA MAS HICE ESTO 
-    public function doPayment(Request $request)
+    public function doPayment(Request $request) : JsonResponse
     {
 
         $totalAmount = $request->amount;

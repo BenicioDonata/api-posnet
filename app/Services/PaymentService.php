@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\{Card, Payment};
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
+
 use Exception;
 
 
@@ -14,15 +16,16 @@ class PaymentService
 
         // SE PODRIA PONER VARIABLES DE ENTORNO O UNA TABLA CON EL % de INCREMENTO
 
-        $amount = $request->amount;
-        $quotas = $request->quota;
+            $amount = $request->amount; //1000
+            $quotas = $request->quotas; //3
 
-        $incremetPercent = ($quotas * 3 ) - 3 ; //SE LES RESTA EL 3% DE LA 1ra CUOTA
+            $incremetPercent = ($quotas * 3 ) - 3 ; //SE LES RESTA EL 3% DE LA 1ra CUOTA
 
-        $subTotalAmount = ($amount * $incremetPercent) / 100; //CALCULO EL increment percent del monto comprado
+            $subTotalAmount = ($amount * $incremetPercent) / 100; //CALCULO EL increment percent del monto comprado
 
-        return $amount + $subTotalAmount; //RETORNO EL MONTO TOTAL MAS EL INCREMENTO POR CUOTAS
+            $total = $amount + $subTotalAmount; //RETORNO EL MONTO TOTAL MAS EL INCREMENTO POR CUOTAS
 
+            return response()->json($total);
     }
 
     public function checkAmountAvailable($request, $totalAmount) {

@@ -24,11 +24,11 @@ class User extends Authenticatable
         'dni'
     ];
 
-    protected $table = "user";
+    protected $table = "users";
 
 
     public function card()
     {
-        return $this->belongsTo('App\Models\Card');
+        return $this->hasOne('App\Models\Card');
     }
 }

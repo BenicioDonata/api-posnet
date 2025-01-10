@@ -22,7 +22,7 @@ class Payment extends Model
         'amount',
     ];
 
-    protected $table = "payment";
+    protected $table = "payments";
 
 
     public function card()

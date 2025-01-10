@@ -34,5 +34,7 @@ if (!function_exists('validate_entity_card')) {
        if(!in_array($request->bank_entity_name, $entities)){
         return false;
        }
+
+       return true;
     }
 }
