@@ -60,6 +60,15 @@ class PosnetController extends Controller
                 return response()->json(["Request Error."], 500);
             }
 
+            //o usar pra validar el requets
+            // try {
+            //     $request->validate([
+            //         'content' => 'required|string|max:300',
+            //     ]);
+            // } catch (ValidationException $e) {
+            //     return response()->json($e->errors(), 422);
+            // }
+
             //valido que monto no sea menor o igual a cero
             if($totalAmount <= 0) {
                 return response()->json(["Amount is zero."], 500);
